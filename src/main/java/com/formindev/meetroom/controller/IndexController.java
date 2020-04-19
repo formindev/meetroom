@@ -16,11 +16,10 @@ public class IndexController {
     private UserRepository userRepository;
 
     @GetMapping("/")
-    public String main(
-            @RequestParam(name = "name", required = false, defaultValue = "World") String name,
-            Model model
-    ) {
-        model.addAttribute("name", name);
+    public String main(Model model) {
+        Iterable<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+
         return "index";
     }
 
