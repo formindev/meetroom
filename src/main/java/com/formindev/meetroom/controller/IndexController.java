@@ -22,9 +22,4 @@ public class IndexController {
 
         return "index";
     }
-
-    @GetMapping("/users")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userRepository.findAll();
-    }
 }
