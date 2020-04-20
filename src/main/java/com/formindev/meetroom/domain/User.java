@@ -1,6 +1,8 @@
 package com.formindev.meetroom.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -9,12 +11,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    @Size(min = 3, max = 8)
     private String userName;
 
     private String firstName;
 
     private String secondName;
 
+    @NotNull
+    @Size(min = 3)
     private String password;
 
     public String getRole() {
