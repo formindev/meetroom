@@ -1,7 +1,5 @@
 package com.formindev.meetroom.domain;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,6 +27,24 @@ public class Event {
 
     @NotNull
     private ZonedDateTime finishDate;
+
+    public Event(
+            User owner,
+            @NotNull String title,
+            @Size(max = 2048) String description,
+            @NotNull ZonedDateTime startDate,
+            @NotNull ZonedDateTime finishDate
+    ) {
+        this.owner = owner;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+    }
+
+    public Event() {
+
+    }
 
     public Long getId() {
         return id;

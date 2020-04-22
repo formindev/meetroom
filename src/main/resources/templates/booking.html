@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"><head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>MeetRoom</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -10,6 +11,9 @@
     <div class="container-fluid">
         <div class="bg-info clearfix mb-4">
             <button type="button" class="btn btn-secondary float-left">Example Button floated left</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="Def">
+                Launch static backdrop modal
+            </button>
             <button type="button" class="btn btn-secondary float-right">Example Button floated right</button>
         </div>
 
@@ -23,7 +27,15 @@
                         <div class="text" style="text-align: center; height: 80px" th:text="${hour}"></div>
                 </div>
             </div>
+        <div class="col">
+            <div class="row" th:each="event : ${events}" style="height: max-content">
+                <div class="text" style="text-align: center; height: 80px" th:text="${event.getTitle()}"></div>
+                <div class="text" style="text-align: center; height: 80px" th:text="${event.getOwner()}"></div>
+            </div>
+        </div>
     </div>
+<div th:insert="~{modal :: event-modal}"></div>
+
 <div th:insert="~{layout :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

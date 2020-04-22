@@ -7,5 +7,5 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface EventRepository extends CrudRepository<Event, Long> {
-    //List<Event> findByStartDateAndToFinishDate(ZonedDateTime startDate, ZonedDateTime finishDate);
+    List<Event> findByStartDateAfterAndFinishDateBefore(ZonedDateTime startDate, ZonedDateTime finishDate);
 }
