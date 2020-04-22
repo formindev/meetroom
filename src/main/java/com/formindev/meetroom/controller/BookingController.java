@@ -20,6 +20,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/booking")
@@ -35,7 +36,8 @@ public class BookingController {
         LocalDateTime localEndDate = LocalDateTime.of(2020, Month.APRIL, 21, 00, 30);
         ZonedDateTime endDate = ZonedDateTime.of(localEndDate, localZone);
         List<Event> events = eventService.getEventsByDateRange(startDate, endDate);
-        model.addAttribute("daysOfWeek", DateUtils.daysOfWeek);
+        Map<String, String> daysOfWeek = DateUtils.getDaysOfWeek();
+        model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("hoursOfDay", DateUtils.hoursOfDay);
         model.addAttribute("events", events);
         return "booking";
@@ -52,6 +54,20 @@ public class BookingController {
         ZonedDateTime tempStartDate = ZonedDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
         ZonedDateTime tempFinishDate = ZonedDateTime.parse(finishDate, DateTimeFormatter.ISO_DATE_TIME);
         eventService.saveEvent(owner, title, description, tempStartDate, tempFinishDate);
+
+        return "redirect:/booking";
+    }
+
+    @PostMapping("/nextWeek")
+    public String getNextWeek() {
+        DateUtils.setNextWeek();
+
+        return "redirect:/booking";
+    }
+
+    @PostMapping("/prevWeek")
+    public String getPrevWeek() {
+        DateUtils.setPrevWeek();
 
         return "redirect:/booking";
     }

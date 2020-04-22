@@ -14,7 +14,7 @@
                 </li>
             </ul>
         </div>
-        <div th:if="${#session != null}" sec:authorize="isAuthenticated()">
+        <div th:if="${!session.isEmpty()}" sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
                 <span class="navbar-text mr-2">[[${#httpServletRequest.remoteUser}]]</span>
                 <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Sign out</button>

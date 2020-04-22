@@ -31,4 +31,10 @@ public class EventService {
         return events;
     }
 
+    public List<Event> getEventsByDate(ZonedDateTime startDate) {
+        List<Event> events = eventRepository.findByStartDate(startDate);
+
+        return events;
+    }
+
 }

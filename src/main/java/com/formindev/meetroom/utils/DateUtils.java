@@ -1,19 +1,43 @@
 package com.formindev.meetroom.utils;
 
-public class DateUtils {
-    public static String[] daysOfWeek = new String[] {
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-    };
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
-    public static String[] hoursOfDay = new String[] {
+public class DateUtils {
+    private static final int DAYS_OF_WEEK = 7;
+    public static ZonedDateTime currentMonday;
+
+    static {
+        currentMonday = ZonedDateTime.now()
+            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    }
+
+    public static final String[] hoursOfDay = new String[] {
             "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
             "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
             "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
             "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
     };
+
+    public static Map<String, String> getDaysOfWeek() {
+        Map<String, String> currentWeek = new LinkedHashMap<>();
+        for (int i = 0; i < 6; i++) {
+            currentWeek.put(
+                    currentMonday.plusDays(i).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    currentMonday.plusDays(i).getDayOfWeek().toString());
+        }
+
+        return currentWeek;
+    }
+
+    public static void setPrevWeek() {
+        currentMonday = currentMonday.minusDays(DAYS_OF_WEEK);
+    }
+
+    public static void setNextWeek() {
+        currentMonday = currentMonday.plusDays(DAYS_OF_WEEK);
+    }
 }

@@ -8,18 +8,25 @@
 <body>
     <div th:insert="~{parts/layout :: menu}" class="text-center mb-5"></div>
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="bg-info clearfix mb-4">
-            <button type="button" class="btn btn-secondary float-left">Example Button floated left</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="Def">
-                Launch static backdrop modal
+            <form method="post" th:action="@{booking/prevWeek}">
+                <button type="submit" class="btn btn-secondary float-left">Prev. week</button>
+            </form>
+            <button type="button" class="btn btn-primary float-center" data-toggle="modal" data-target="#exampleModal" data-whatever="Def">
+                Add event
             </button>
-            <button type="button" class="btn btn-secondary float-right">Example Button floated right</button>
+            <form method="post" th:action="@{booking/nextWeek}">
+                <button type="submit" class="btn btn-secondary float-right">Next week</button>
+            </form>
         </div>
+    </div>
 
+    <div class="container-fluid">
         <div class="row align-items-center mb-2 border-bottom mb-2">
             <div class="col border-left" th:each="day : ${daysOfWeek}">
-                <div class="text align-middle" style="text-align: center" th:text="${day}"></div>
+                <div class="text align-middle" style="text-align: center" th:text="${day.getValue()}"></div>
+                <div class="text align-middle" style="text-align: center" th:text="${day.getKey()}"></div>
            </div>
         </div>
         <div class="col border-right" style="width: 60px">
