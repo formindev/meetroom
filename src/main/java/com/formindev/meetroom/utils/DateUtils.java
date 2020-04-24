@@ -7,7 +7,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 public class DateUtils {
-    private static final int DAYS_OF_WEEK = 7;
+    public static final int DAYS_OF_WEEK = 7;
     public static ZonedDateTime currentMonday;
 
     static {
