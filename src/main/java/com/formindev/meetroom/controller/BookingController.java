@@ -4,6 +4,7 @@ import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
+import com.formindev.meetroom.utils.EventDuration;
 import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,16 +26,18 @@ public class BookingController {
 
     @GetMapping
     public String getEventsByWeek(Model model) {
-        Iterable<Event> events = eventService.getEventsByCurrentWeek(DateUtils.currentMonday);
+        Map<String, List<Event>> events = eventService.getEventsByWeek();
         Map<String, String> daysOfWeek = DateUtils.getDaysOfWeek();
+        Map<Long, EventDuration> eventDurations = eventService.getEventDurations();
         model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("hoursOfDay", DateUtils.hoursOfDay);
         model.addAttribute("events", events);
+        model.addAttribute("eventDurations", eventDurations);
 
         return "booking";
     }
 
-    @PostMapping("/addEvent")
+    @PostMapping("event/addEvent")
     public String addEvent(
             @AuthenticationPrincipal User owner,
             @RequestParam String reserveDate,
@@ -60,5 +63,15 @@ public class BookingController {
         DateUtils.setPrevWeek();
 
         return "redirect:/booking";
+    }
+
+    @PostMapping("/event")
+    public String getEventForm(
+            @RequestParam String startDate,
+            Model model
+    ) {
+        model.addAttribute("startDate", startDate);
+
+        return "event";
     }
 }

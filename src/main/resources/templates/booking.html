@@ -6,52 +6,55 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
-    <script th:inline="javascript">
-        $(document).on('show.bs.modal','#eventModal', function () {
-  alert('hi');
-})
-    </script>
-
-    <div th:insert="~{parts/layout :: menu}" class="text-center mb-5"></div>
+     <div th:insert="~{parts/layout :: menu}" class="text-center mb-5"></div>
 
     <div class="container">
-        <div class="table-responsive-lg">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        <form method="post" th:action="@{booking/prevWeek}">
-                            <button type="submit" class="btn btn-secondary">Prev. week</button>
-                        </form>
-                    </th>
-                    <th th:each="day : ${daysOfWeek}">
-                        <div th:text="${day.getValue()}"></div>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#eventModal" data-whatever="Def">
-                            <div th:text="${day.getKey()}"></div>
-                        </button>
-                    </th>
-                    <th>
-                        <form method="post" th:action="@{booking/nextWeek}">
-                            <button type="submit" class="btn btn-secondary">Next week</button>
-                        </form>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="hour : ${hoursOfDay}">
-                        <th>
-                            <div th:text="${hour}"></div>
-                        </th>
-                        <td>
+        <div class="text-center mb-3">
+            <h3>Meeting room</h3>
+        </div>
 
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="row mb-3 justify-content-center">
+            <div class="col">
+                <form method="post" th:action="@{booking/prevWeek}">
+                    <button type="submit" class="btn btn-secondary mt-3">Prev. week</button>
+                </form>
+            </div>
+            <div class="col" th:each="day : ${daysOfWeek}">
+                <div class="text-align-center" th:text="${day.getValue()}"></div>
+                <form method="post" th:action="@{booking/event}">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <input type="text" hidden="true" name="startDate" th:value="${day.getKey()}">
+                        <div th:text="${day.getKey()}" ></div>
+                    </button>
+                </form>
+            </div>
+            <div class="col">
+                <form method="post" th:action="@{booking/nextWeek}">
+                    <button type="submit" class="btn btn-secondary  mt-3">Next week</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row justify-content-center" th:each="hour : ${hoursOfDay}" style="height: max-content">
+                    <div style="height: 60px;" th:text="${hour}"></div>
+                </div>
+            </div>
+            <div class="col" th:each="day : ${daysOfWeek}">
+                <div th:each="event : ${events.get(day.getKey())}">
+                    <div class="card text-white bg-secondary"
+                         th:style="position+':absolute;'+top+':'+${eventDurations.get(event.getId()).getStartInMinute()}+'px;'+ height + ':178px;'+width+':100%;'">
+                        <div class="card-title">
+                            Booking by <span th:text="${event.getOwner().getUsername()}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
         </div>
     </div>
 
-    <div th:insert="~{parts/modal :: event-modal}"></div>
 
     <div th:insert="~{parts/layout :: footer}"></div>
 

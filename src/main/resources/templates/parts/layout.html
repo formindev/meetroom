@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
-    <nav th:fragment="menu" class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <nav th:fragment="menu" class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">MeetRoom</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,7 +14,8 @@
                 </li>
             </ul>
         </div>
-        <div th:if="${!session.isEmpty()}" sec:authorize="isAuthenticated()">
+
+        <div th:if="${session.user} != ''" sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
                 <span class="navbar-text mr-2">[[${#httpServletRequest.remoteUser}]]</span>
                 <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Sign out</button>
@@ -22,7 +23,7 @@
         </div>
     </nav>
 
-    <footer th:fragment="footer" class="page-footer font-small bg-light mt-5">
+    <footer th:fragment="footer" class="page-footer font-small bg-light">
         <div class="footer-copyright text-center py-3">© 2020 Designed by formindev</div>
     </footer>
 

@@ -4,12 +4,18 @@ import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.utils.DateUtils;
+import com.formindev.meetroom.utils.EventDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EventService {
@@ -37,13 +43,44 @@ public class EventService {
     }
 
     public List<Event> getEventsByDateRange(ZonedDateTime startDate, ZonedDateTime finishDate) {
-        List<Event> events = eventRepository.findByStartDateAfterAndFinishDateBefore(startDate, finishDate);
+        List<Event> events = eventRepository.findByStartDateAfterAndFinishDateBeforeOrderByStartDate(startDate, finishDate);
         return events;
     }
 
-    public List<Event> getEventsByCurrentWeek(ZonedDateTime startDate) {
-        ZonedDateTime finishDate = startDate.plusDays(DateUtils.DAYS_OF_WEEK);
-        return getEventsByDateRange(startDate, finishDate);
+    public Map<Long, EventDuration> getEventDurations() {
+        ZonedDateTime finishDate = DateUtils.currentMonday.plusDays(DateUtils.DAYS_OF_WEEK);
+        Iterable<Event> eventsByWeek = getEventsByDateRange(DateUtils.currentMonday, finishDate);
+        Map<Long, EventDuration> eventDurations = new LinkedHashMap<>();
+        for(Event event : eventsByWeek) {
+            long startInMinute = Duration.between
+                    (
+                            event.getStartDate().truncatedTo(ChronoUnit.DAYS),
+                            event.getStartDate()
+                    ).toMinutes();
+            long durationInMinute = Duration.between
+                    (
+                            event.getStartDate(),
+                            event.getFinishDate()
+                    ).toMinutes();
+            eventDurations.put(event.getId(), new EventDuration(startInMinute, durationInMinute));
+        }
+
+        return eventDurations;
+    }
+
+    public Map<String, List<Event>> getEventsByWeek() {
+        Map<String, List<Event>> events = new LinkedHashMap<> ();
+
+        for (int i = 0; i < DateUtils.DAYS_OF_WEEK - 1; i++) {
+            ZonedDateTime date = DateUtils.currentMonday.plusDays(i);
+            List<Event> eventsByDate = eventRepository.findByStartDateAfterAndFinishDateBeforeOrderByStartDate
+                    (
+                            date, date.plusDays(1)
+                    );
+            events.put(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), eventsByDate);
+        }
+
+        return events;
     }
 
     private boolean checkEvent(ZonedDateTime startDate, ZonedDateTime finishDate) {
