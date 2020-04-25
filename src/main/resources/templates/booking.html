@@ -44,7 +44,9 @@
             <div class="col" th:each="day : ${daysOfWeek}">
                 <div th:each="event : ${events.get(day.getKey())}">
                     <div class="card text-white bg-secondary"
-                         th:style="position+':absolute;'+top+':'+${eventDurations.get(event.getId()).getStartInMinute()}+'px;'+ height + ':178px;'+width+':100%;'">
+                         th:style="position+':absolute;'+
+                                   top+':'+${eventDurations.get(event.getId()).getStartInMinute()}+'px;'+
+                                   height+':'+${eventDurations.get(event.getId()).getDurationInMinute()-2}+'px;'+width+':100%;'">
                         <div class="card-title">
                             Booking by <span th:text="${event.getOwner().getUsername()}"></span>
                         </div>
