@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,59 +29,57 @@ public class EventService {
             String title,
             String description
     ) {
-        ZonedDateTime startDate = ZonedDateTime.parse(reserveDate + 'T' + startTime + 'Z', DateTimeFormatter.ISO_DATE_TIME);
-        String[] time = duration.split(":");
-        int hour = Integer.parseInt(time[0]);
-        int minute = Integer.parseInt(time[1]);
-        ZonedDateTime finishDate = startDate.plusHours(hour).plusMinutes(minute);
+        String[] startTimeArray = startTime.split(":");
+        int startHour = Integer.parseInt(startTimeArray[0]);
+        int startMinute = Integer.parseInt(startTimeArray[1]);
+        LocalDateTime startDate = LocalDateTime.parse(reserveDate).plusHours(startHour).plusMinutes(startMinute);
+        String[] finishTimeArray = duration.split(":");
+        int finishHour = Integer.parseInt(finishTimeArray[0]);
+        int finishMinute = Integer.parseInt(finishTimeArray[1]);
+        LocalDateTime finishDate = startDate.plusHours(finishHour).plusMinutes(finishMinute);
         if (checkEvent(startDate, finishDate)) {
             Event event = new Event(owner, title, description, startDate, finishDate);
             eventRepository.save(event);
         }
     }
 
-    public List<Event> getEventsByDateRange(ZonedDateTime startDate, ZonedDateTime finishDate) {
-        List<Event> events = eventRepository.findByStartDateAfterAndFinishDateBeforeOrderByStartDate(startDate, finishDate);
+    public List<Event> getEventsByDateRange(LocalDateTime startDate, LocalDateTime finishDate) {
+        List<Event> events = eventRepository.findByStartDateAfterAndFinishDateBefore(startDate, finishDate);
         return events;
     }
 
     public Map<Long, EventDuration> getEventDurations() {
-        ZonedDateTime finishDate = DateUtils.currentMonday.plusDays(DateUtils.DAYS_OF_WEEK);
+        LocalDateTime finishDate = DateUtils.currentMonday.plusDays(DateUtils.DAYS_OF_WEEK);
         Iterable<Event> eventsByWeek = getEventsByDateRange(DateUtils.currentMonday, finishDate);
         Map<Long, EventDuration> eventDurations = new LinkedHashMap<>();
         for(Event event : eventsByWeek) {
-            long startInMinute = Duration.between
-                    (
-                            event.getStartDate().truncatedTo(ChronoUnit.DAYS),
-                            event.getStartDate()
-                    ).toMinutes();
-            long durationInMinute = Duration.between
-                    (
-                            event.getStartDate(),
-                            event.getFinishDate()
-                    ).toMinutes();
-            eventDurations.put(event.getId(), new EventDuration(startInMinute, durationInMinute));
+            eventDurations.put(event.getId(), new EventDuration(event));
         }
 
         return eventDurations;
     }
 
-    public Map<String, List<Event>> getEventsByWeek() {
-        Map<String, List<Event>> events = new LinkedHashMap<> ();
+    public Map<LocalDateTime, List<Event>> getEventsByWeek() {
+        Map<LocalDateTime, List<Event>> events = new LinkedHashMap<> ();
 
         for (int i = 0; i < DateUtils.DAYS_OF_WEEK - 1; i++) {
-            ZonedDateTime date = DateUtils.currentMonday.plusDays(i);
-            List<Event> eventsByDate = eventRepository.findByStartDateAfterAndFinishDateBeforeOrderByStartDate
+            LocalDateTime date = DateUtils.currentMonday.plusDays(i);
+            List<Event> eventsByDate = eventRepository.findByStartDateAfterAndFinishDateBefore
                     (
                             date, date.plusDays(1)
                     );
-            events.put(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), eventsByDate);
+            events.put(date, eventsByDate);
         }
 
         return events;
     }
 
-    private boolean checkEvent(ZonedDateTime startDate, ZonedDateTime finishDate) {
+    public Event getEventById(long id) {
+        Event event = eventRepository.findById(id);
+        return event;
+    }
+
+    private boolean checkEvent(LocalDateTime startDate, LocalDateTime finishDate) {
         Integer eventsCount = eventRepository
                 .findByStartDateBetweenOrFinishDateBetween(startDate, finishDate);
         if (eventsCount == 0) {
@@ -91,5 +87,9 @@ public class EventService {
         }
 
         return false;
+    }
+
+    public void deleteEventById(long id) {
+        eventRepository.deleteById(id);
     }
 }

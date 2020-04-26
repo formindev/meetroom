@@ -20,11 +20,11 @@
                 </form>
             </div>
             <div class="col" th:each="day : ${daysOfWeek}">
-                <div class="text-align-center" th:text="${day.getValue()}"></div>
+                <div class="text-align-center" th:text="${day.getDayOfWeek()}"></div>
                 <form method="post" th:action="@{booking/event}">
                     <button type="submit" class="btn btn-primary btn-sm">
-                        <input type="text" hidden="true" name="startDate" th:value="${day.getKey()}">
-                        <div th:text="${day.getKey()}" ></div>
+                        <input type="datetime-local" hidden="true" name="startDate" th:value="${day}">
+                        <div th:text="${#temporals.format(day,'dd.MM.yyyy')}"></div>
                     </button>
                 </form>
             </div>
@@ -42,13 +42,14 @@
                 </div>
             </div>
             <div class="col" th:each="day : ${daysOfWeek}">
-                <div th:each="event : ${events.get(day.getKey())}">
-                    <div class="card text-white bg-secondary"
+                <div th:each="event : ${events.get(day)}">
+                    <div class="card text-white text-center bg-secondary"
                          th:style="position+':absolute;'+
                                    top+':'+${eventDurations.get(event.getId()).getStartInMinute()}+'px;'+
                                    height+':'+${eventDurations.get(event.getId()).getDurationInMinute()-2}+'px;'+width+':100%;'">
                         <div class="card-title">
-                            Booking by <span th:text="${event.getOwner().getUsername()}"></span>
+                            <h7>Reserved by <span th:text="${event.getOwner().getUsername()}"></span></h7>
+                            <a href="details.html" th:href="@{/booking/event/{id}(id=${event.id})}" class="btn btn-primary btn-sm">Get more...</a>
                         </div>
                     </div>
                 </div>

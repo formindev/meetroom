@@ -3,7 +3,7 @@ package com.formindev.meetroom.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
@@ -23,17 +23,17 @@ public class Event {
     private String description;
 
     @NotNull
-    private ZonedDateTime startDate;
+    private LocalDateTime startDate;
 
     @NotNull
-    private ZonedDateTime finishDate;
+    private LocalDateTime finishDate;
 
     public Event(
             User owner,
             @NotNull String title,
             @Size(max = 2048) String description,
-            @NotNull ZonedDateTime startDate,
-            @NotNull ZonedDateTime finishDate
+            @NotNull LocalDateTime startDate,
+            @NotNull LocalDateTime finishDate
     ) {
         this.owner = owner;
         this.title = title;
@@ -78,19 +78,19 @@ public class Event {
         this.description = description;
     }
 
-    public ZonedDateTime getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(ZonedDateTime startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public ZonedDateTime getFinishDate() {
+    public LocalDateTime getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(ZonedDateTime finishDate) {
+    public void setFinishDate(LocalDateTime finishDate) {
         this.finishDate = finishDate;
     }
 }

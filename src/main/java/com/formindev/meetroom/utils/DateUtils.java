@@ -8,10 +8,10 @@ import java.util.*;
 
 public class DateUtils {
     public static final int DAYS_OF_WEEK = 7;
-    public static ZonedDateTime currentMonday;
+    public static LocalDateTime currentMonday;
 
     static {
-        currentMonday = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+        currentMonday = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
             .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
@@ -23,18 +23,17 @@ public class DateUtils {
             "20:00", "21:00", "22:00", "23:00", "24:00"
     };
 
-    public static Map<String, String> getDaysOfWeek() {
-        Map<String, String> currentWeek = new LinkedHashMap<>();
+    public static List<LocalDateTime> getDaysOfWeek() {
+        List<LocalDateTime> currentWeek = new ArrayList<>();
+
         for (int i = 0; i < DAYS_OF_WEEK - 1; i++) {
-            currentWeek.put(
-                    currentMonday.plusDays(i).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                    currentMonday.plusDays(i).getDayOfWeek().toString());
+            currentWeek.add(currentMonday.plusDays(i));
         }
 
         return currentWeek;
     }
 
-    public static long getDurationInMinutes(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public static long getDurationInMinutes(LocalDateTime startDate, LocalDateTime endDate) {
         Duration duration = Duration.between(startDate, endDate);
 
         return duration.toMinutes();

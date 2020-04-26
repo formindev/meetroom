@@ -10,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +24,8 @@ public class BookingController {
 
     @GetMapping
     public String getEventsByWeek(Model model) {
-        Map<String, List<Event>> events = eventService.getEventsByWeek();
-        Map<String, String> daysOfWeek = DateUtils.getDaysOfWeek();
+        Map<LocalDateTime, List<Event>> events = eventService.getEventsByWeek();
+        Iterable<LocalDateTime> daysOfWeek = DateUtils.getDaysOfWeek();
         Map<Long, EventDuration> eventDurations = eventService.getEventDurations();
         model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("hoursOfDay", DateUtils.hoursOfDay);
@@ -51,6 +49,25 @@ public class BookingController {
         return "redirect:/booking";
     }
 
+    @GetMapping("event/{id}")
+    public String showEvent(
+            @PathVariable long id,
+            Model model
+    ) {
+        Event event = eventService.getEventById(id);
+        EventDuration eventDuration = new EventDuration(event);
+        model.addAttribute("event", event);
+        model.addAttribute("eventDuration", eventDuration);
+        return "details";
+    }
+
+    @PostMapping("/event/{id}")
+    public String deleteEvent(@PathVariable long id) {
+        eventService.deleteEventById(id);
+
+        return "redirect:/booking";
+    }
+
     @PostMapping("/nextWeek")
     public String getNextWeek() {
         DateUtils.setNextWeek();
@@ -70,7 +87,8 @@ public class BookingController {
             @RequestParam String startDate,
             Model model
     ) {
-        model.addAttribute("startDate", startDate);
+        LocalDateTime date = LocalDateTime.parse(startDate);
+        model.addAttribute("startDate", date);
 
         return "event";
     }
