@@ -62,9 +62,10 @@ public class BookingController {
     }
 
     @PostMapping("/event/{id}")
-    public String deleteEvent(@PathVariable long id) {
-        eventService.deleteEventById(id);
-
+    public String deleteEvent(
+            @AuthenticationPrincipal User user,
+            @PathVariable long id) {
+        eventService.deleteEventById(user, id);
         return "redirect:/booking";
     }
 

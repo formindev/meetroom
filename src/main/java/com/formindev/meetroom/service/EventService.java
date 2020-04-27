@@ -7,10 +7,7 @@ import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +41,7 @@ public class EventService {
     }
 
     public List<Event> getEventsByDateRange(LocalDateTime startDate, LocalDateTime finishDate) {
-        List<Event> events = eventRepository.findByStartDateAfterAndFinishDateBefore(startDate, finishDate);
+        List<Event> events = eventRepository.findByStartDateBetween(startDate, finishDate);
         return events;
     }
 
@@ -64,7 +61,7 @@ public class EventService {
 
         for (int i = 0; i < DateUtils.DAYS_OF_WEEK - 1; i++) {
             LocalDateTime date = DateUtils.currentMonday.plusDays(i);
-            List<Event> eventsByDate = eventRepository.findByStartDateAfterAndFinishDateBefore
+            List<Event> eventsByDate = eventRepository.findByStartDateBetween
                     (
                             date, date.plusDays(1)
                     );
@@ -79,6 +76,14 @@ public class EventService {
         return event;
     }
 
+    public void deleteEventById(User user, long id) {
+        Event event = getEventById(id);
+
+        if (event.getOwner().getUsername().equals(user.getUsername())) {
+            eventRepository.deleteById(id);
+        }
+    }
+
     private boolean checkEvent(LocalDateTime startDate, LocalDateTime finishDate) {
         Integer eventsCount = eventRepository
                 .findByStartDateBetweenOrFinishDateBetween(startDate, finishDate);
@@ -87,9 +92,5 @@ public class EventService {
         }
 
         return false;
-    }
-
-    public void deleteEventById(long id) {
-        eventRepository.deleteById(id);
     }
 }

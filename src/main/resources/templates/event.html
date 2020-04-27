@@ -18,7 +18,7 @@
         <div class="row justify-content-center">
         <form method="post" th:action="@{event/addEvent}">
             <div class="form-group row">
-                <div for="reserveDate" class="col-form-label col-sm-5">Reserved date</div>
+                <div for="reserveDate" class="col-form-label col-sm-5">Reserving date</div>
                 <div class="col-sm-7 mt-2">
                     <input type="hidden" class="form-control" name="reserveDate" id="reserveDate" th:value="${startDate}" readonly>
                     <span th:text="${#temporals.format(startDate, 'dd.MM.yyyy')}"></span>
@@ -27,19 +27,23 @@
             <div class="form-group row">
                 <label for="title" class="col-form-label col-sm-5">Title</label>
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" name="title" id="title">
+                    <input type="text" class="form-control" name="title" id="title" placeholder="Insert title">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="startTime" class="col-form-label col-sm-5">Start time</label>
                 <div class="col-sm-7">
-                    <input type="datetime-local" class="form-control" name="startTime" id="startTime">
+                    <input type="text" class="mask-time form-control" name="startTime" id="startTime"
+                           pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" minlength="5" maxlength="5"
+                           placeholder="__:__">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="duration" class="col-form-label col-sm-5">Duration</label>
                 <div class="col-sm">
-                    <input type="datetime-local" class="form-control" name="duration" id="duration">
+                    <input type="text" class="form-control" name="duration" id="duration"
+                           pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" minlength="5" maxlength="5"
+                           placeholder="__:__">
                 </div>
             </div>
             <div class="form-group row">
@@ -60,5 +64,11 @@
 
     <div th:insert="~{parts/layout :: script}"></div>
 
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $('#startTime').mask('00:00');
+            $('#duration').mask('00:00');
+         });
+     </script>
 </body>
 </html>

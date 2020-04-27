@@ -10,10 +10,10 @@
 
     <div class="container">
         <div class="text-center mb-3">
-            <h3>New event</h3>
+            <h3>Event details</h3>
         </div>
         <div th:if="${param.error}" class="text-center mb-5">
-            Can't reserved meeting room!
+            Can't delete the event!
         </div>
         <div class="row justify-content-center">
         <form method="post" th:action="@{{id}(id=${event.id})}">
@@ -30,24 +30,24 @@
             <div class="form-group row">
                 <label for="title" class="col-form-label col-sm-5">Title</label>
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" name="title" id="title" th:value="${event.getTitle()}">
+                    <input type="text" class="form-control" name="title" id="title" th:value="${event.getTitle()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="startTime" class="col-form-label col-sm-5">Start time</label>
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" name="startTime" id="startTime" th:value="${eventDuration.getStartTime()}">
+                    <input type="text" class="form-control" name="startTime" id="startTime" th:value="${eventDuration.getStartTime()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="duration" class="col-form-label col-sm-5">Duration</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" name="duration" id="duration" th:value="${eventDuration.getDurationTime()}">
+                    <input type="text" class="form-control" name="duration" id="duration" th:value="${eventDuration.getDurationTime()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="description" class="col-form-label col-sm-2">Description</label>
-                <textarea class="form-control" name="description" id="description">[[${event.getDescription()}]]</textarea>
+                <textarea class="form-control" name="description" id="description" readonly>[[${event.getDescription()}]]</textarea>
             </div>
             <div class="form-group row justify-content-center align-self-center">
                 <a th:href="@{/booking}">
