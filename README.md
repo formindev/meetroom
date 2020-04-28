@@ -41,7 +41,8 @@ You need to log in (for example, username: 'first', password: '1234').
 On the booking page you can reserve a meeting room at the interest date and time.
 All events shown on the booking page.
 To create an event you need click a date in the header table and on the opened page insert  a start time, duration, title and description.
-If you want to see a detail you need click on a header the event.
+If you want to see a title and description you must hover the mouse cursor over the title on the event card.
+If you want to see a full detail you need click on the event card.
 
 ### Сonstraints
 

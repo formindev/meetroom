@@ -7,6 +7,8 @@ import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -33,8 +35,10 @@ public class EventService {
         int finishHour = Integer.parseInt(finishTimeArray[0]);
         int finishMinute = Integer.parseInt(finishTimeArray[1]);
         LocalDateTime finishDate = startDate.plusHours(finishHour).plusMinutes(finishMinute);
+        //TODO replace to validation
+        boolean isMinDuration = Duration.between(startDate, finishDate).toMinutes() >= 30;
         // Checking if event is not overlap with other events
-        if (checkEvent(startDate, finishDate)) {
+        if (checkEvent(startDate, finishDate) && isMinDuration) {
             Event event = new Event(owner, title, description, startDate, finishDate);
             eventRepository.save(event);
         }
@@ -65,6 +69,7 @@ public class EventService {
             for(Event event : eventsByDate) {
                 // Split event if finish date is different than today
                 if (!event.getStartDate().truncatedTo(ChronoUnit.DAYS).equals(event.getFinishDate().truncatedTo(ChronoUnit.DAYS))) {
+                    //TODO check if finish date is next week
                     tempEvent = event.clone();
                     tempEvent.setStartDate(event.getFinishDate().truncatedTo(ChronoUnit.DAYS));
 

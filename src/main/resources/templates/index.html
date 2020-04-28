@@ -9,12 +9,32 @@
     <div th:insert="~{parts/layout :: menu}" class="text-center mb-5"></div>
 
     <div class="container">
-        <div class="text-center mb-3">
-            <h3>Welcom, [[${#httpServletRequest.remoteUser}]]</h3>
+        <div class="row justify-content-center text-center mb-5">
+            <h3>Welcom to Meetroom project.</h3>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row justify-content-center align-self-center mb-3">
+                    <h5><p>Meetroom is a testing project for booking meeting room inside a company.</p>
+                    On the booking page you can reserve a meeting room at the interest date and time.
+                    All events shown on the booking page.
+                    To create an event you need click a date in the header table and on the opened page insert  a start time, duration, title and description.
+                    <p>If you want to see a title and description you must hover the mouse cursor over the title on the event card.
+                        If you want to see a full detail you need click on the event card.</p></h5>
+                </div>
+
+                <div class="row justify-content-center align-self-center">
+                    <a th:href="@{/booking}">
+                        <button type="button" class="btn btn-primary">Get started</button>
+                    </a>
+                </div>
+            </div>
+            <div class="col">
+                <img th:src="@{images/booking_page.jpg}" alt="" class="img-fluid"/>
+            </div>
         </div>
     </div>
-
-
 
     <div th:insert="~{parts/layout :: footer}"></div>
 

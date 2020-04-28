@@ -16,10 +16,11 @@ public class Event implements Cloneable{
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @NotNull
+    @NotNull(message = "Title can't be empty")
+    @Size(min=3, message = "Title length must be min 8")
     private String title;
 
-    @Size(max = 2048)
+    @Size(max = 2048, message = "Description too long")
     private String description;
 
     @NotNull

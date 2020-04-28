@@ -20,6 +20,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     @Size(min = 3, max = 8)
     private String userName;
 
