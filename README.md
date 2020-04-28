@@ -16,23 +16,27 @@ To use the app, you must complete the following steps
 
 To create a new database, run the following commands at the postgres prompt:
 
-`$ sudo -u postgres psql`
- `postgres=# create database meetroom;`
- `postgres=# create user admin with encrypted password 'qwerty';`
- `postgres=# grant all privileges on database meetroom to admin;`
+   `$ sudo -u postgres psql`
+   
+   `postgres=# create database meetroom;`
+    
+   `postgres=# create user admin with encrypted password 'qwerty';`
+    
+   `postgres=# grant all privileges on database meetroom to admin;`
 
 Then you need to restore a dump of the database (run command in meetroom directory):
 
-`$ sudo -u postgres pg_dump meetroom < db/meetroom_dump`
+   `$ sudo -u postgres pg_dump meetroom < db/meetroom_dump`
 
 ### Run application:
 
 - Build package with maven:
 
-`$ ./mvnw clean package`
+    `$ ./mvnw clean package`
 
 - Run the jar file:
-`$ java -jar target/meetroom-0.0.1-SNAPSHOT.jar`
+
+    `$ java -jar target/meetroom-0.0.1-SNAPSHOT.jar`
 
 ### Usage
 
