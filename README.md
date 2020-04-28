@@ -26,7 +26,7 @@ To create a new database, run the following commands at the postgres prompt:
 
 Then you need to restore a dump of the database (run command in meetroom directory):
 
-   `$ sudo -u postgres pg_dump meetroom < db/meetroom_dump`
+   `$ sudo -u postgres psql -d meetroom -f db/meetroom_dump`
 
 ### Run application:
 

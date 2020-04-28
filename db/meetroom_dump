@@ -44,7 +44,7 @@ CREATE TABLE public.events (
     finish_date timestamp without time zone NOT NULL,
     start_date timestamp without time zone NOT NULL,
     title character varying(255) NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint
 );
 
 
@@ -74,8 +74,7 @@ CREATE TABLE public.users (
     password character varying(255) NOT NULL,
     role character varying(255),
     second_name character varying(255),
-    user_name character varying(8) NOT NULL,
-    UNIQUE(user_name)
+    user_name character varying(8) NOT NULL
 );
 
 
@@ -86,7 +85,7 @@ ALTER TABLE public.users OWNER TO admin;
 --
 
 COPY public.events (id, description, finish_date, start_date, title, user_id) FROM stdin;
-1	This is a first test	2020-04-27 08:00:00	2020-04-27 05:00:00	Test	1
+1	It is a test event	2020-04-28 06:00:00	2020-04-28 02:00:00	Test	1
 \.
 
 
@@ -113,6 +112,14 @@ SELECT pg_catalog.setval('public.hibernate_sequence', 1, true);
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users uk_k8d0f2n7n88w1a16yhua64onx; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT uk_k8d0f2n7n88w1a16yhua64onx UNIQUE (user_name);
 
 
 --
