@@ -45,7 +45,8 @@ If you want to see a detail you need click on a header the event.
 
 ### Сonstraints
 
-- Minimum event duration is 30 minutes, maximum 24 hours.
+- It is assumed that the meeting room is one.
+- Event duration can be 00:30 - 23:59.
 - Delete an event can only owner.
 - Events can't overlap.
 

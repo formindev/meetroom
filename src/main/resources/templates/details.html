@@ -16,38 +16,38 @@
             Can't delete the event!
         </div>
         <div class="row justify-content-center">
-        <form method="post" th:action="@{{id}(id=${event.id})}">
+        <form method="post" th:action="@{{id}(id=${eventInfo.getEvent().getId()})}">
             <div class="form-group row">
                 <div for="owner" class="col-form-label col-sm-5">Owner</div>
                 <div class="col-sm-7 mt-2">
-                    <span th:text="${event.getOwner().getUsername()}"></span>
+                    <span th:text="${eventInfo.getEvent().getOwner().getUsername()}"></span>
                 </div>
                 <div for="reserveDate" class="col-form-label col-sm-5">Reserved date</div>
                 <div class="col-sm-7 mt-2">
-                    <span th:text="${#temporals.format(event.getStartDate(), 'dd.MM.yyyy')}"></span>
+                    <span th:text="${#temporals.format(eventInfo.getEvent().getStartDate(), 'dd.MM.yyyy')}"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="title" class="col-form-label col-sm-5">Title</label>
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" name="title" id="title" th:value="${event.getTitle()}" readonly>
+                    <input type="text" class="form-control" name="title" id="title" th:value="${eventInfo.getEvent().getTitle()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="startTime" class="col-form-label col-sm-5">Start time</label>
                 <div class="col-sm-7">
-                    <input type="text" class="form-control" name="startTime" id="startTime" th:value="${eventDuration.getStartTime()}" readonly>
+                    <input type="text" class="form-control" name="startTime" id="startTime" th:value="${eventInfo.getStartTime()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="duration" class="col-form-label col-sm-5">Duration</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" name="duration" id="duration" th:value="${eventDuration.getDurationTime()}" readonly>
+                    <input type="text" class="form-control" name="duration" id="duration" th:value="${eventInfo.getDurationTime()}" readonly>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="description" class="col-form-label col-sm-2">Description</label>
-                <textarea class="form-control" name="description" id="description" readonly>[[${event.getDescription()}]]</textarea>
+                <textarea class="form-control" name="description" id="description" readonly>[[${eventInfo.getEvent().getDescription()}]]</textarea>
             </div>
             <div class="form-group row justify-content-center align-self-center">
                 <a th:href="@{/booking}">

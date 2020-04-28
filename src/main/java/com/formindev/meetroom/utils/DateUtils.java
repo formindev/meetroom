@@ -33,12 +33,6 @@ public class DateUtils {
         return currentWeek;
     }
 
-    public static long getDurationInMinutes(LocalDateTime startDate, LocalDateTime endDate) {
-        Duration duration = Duration.between(startDate, endDate);
-
-        return duration.toMinutes();
-    }
-
     public static void setPrevWeek() {
         currentMonday = currentMonday.minusDays(DAYS_OF_WEEK);
     }

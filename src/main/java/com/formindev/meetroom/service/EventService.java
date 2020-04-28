@@ -4,13 +4,12 @@ import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.utils.DateUtils;
-import com.formindev.meetroom.utils.EventDuration;
+import com.formindev.meetroom.utils.EventInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 public class EventService {
@@ -34,38 +33,46 @@ public class EventService {
         int finishHour = Integer.parseInt(finishTimeArray[0]);
         int finishMinute = Integer.parseInt(finishTimeArray[1]);
         LocalDateTime finishDate = startDate.plusHours(finishHour).plusMinutes(finishMinute);
+        // Checking if event is not overlap with other events
         if (checkEvent(startDate, finishDate)) {
             Event event = new Event(owner, title, description, startDate, finishDate);
             eventRepository.save(event);
         }
     }
 
-    public List<Event> getEventsByDateRange(LocalDateTime startDate, LocalDateTime finishDate) {
-        List<Event> events = eventRepository.findByStartDateBetween(startDate, finishDate);
-        return events;
-    }
+    public Map<LocalDateTime, List<EventInfo>> getEventsByWeek() throws CloneNotSupportedException{
+        Map<LocalDateTime, List<EventInfo>> events = new HashMap<>();
 
-    public Map<Long, EventDuration> getEventDurations() {
-        LocalDateTime finishDate = DateUtils.currentMonday.plusDays(DateUtils.DAYS_OF_WEEK);
-        Iterable<Event> eventsByWeek = getEventsByDateRange(DateUtils.currentMonday, finishDate);
-        Map<Long, EventDuration> eventDurations = new LinkedHashMap<>();
-        for(Event event : eventsByWeek) {
-            eventDurations.put(event.getId(), new EventDuration(event));
-        }
-
-        return eventDurations;
-    }
-
-    public Map<LocalDateTime, List<Event>> getEventsByWeek() {
-        Map<LocalDateTime, List<Event>> events = new LinkedHashMap<> ();
+        Event tempEvent = null;
 
         for (int i = 0; i < DateUtils.DAYS_OF_WEEK - 1; i++) {
             LocalDateTime date = DateUtils.currentMonday.plusDays(i);
+
             List<Event> eventsByDate = eventRepository.findByStartDateBetween
                     (
                             date, date.plusDays(1)
                     );
-            events.put(date, eventsByDate);
+
+            List<EventInfo> eventInfoList = new ArrayList<>();
+
+            //Add split event to the list for next date
+            if (tempEvent != null) {
+                if (tempEvent.getStartDate().equals(date)) {
+                    eventInfoList.add(new EventInfo(tempEvent));
+                    tempEvent = null;
+                }
+            }
+            for(Event event : eventsByDate) {
+                // Split event if finish date is different than today
+                if (!event.getStartDate().truncatedTo(ChronoUnit.DAYS).equals(event.getFinishDate().truncatedTo(ChronoUnit.DAYS))) {
+                    tempEvent = event.clone();
+                    tempEvent.setStartDate(event.getFinishDate().truncatedTo(ChronoUnit.DAYS));
+
+                    event.setFinishDate(event.getStartDate().truncatedTo(ChronoUnit.DAYS).plusHours(23).plusMinutes(59));
+                }
+                eventInfoList.add(new EventInfo(event));
+            }
+            events.put(date, eventInfoList);
         }
 
         return events;

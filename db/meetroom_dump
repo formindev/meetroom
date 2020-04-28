@@ -98,10 +98,6 @@ COPY public.users (id, first_name, password, role, second_name, user_name) FROM 
 2	Petr	4321	ROLE_USER	Ivanov	second
 \.
 
-INSERT INTO public.users (id, user_Name, first_Name, second_Name, password, role) values (1, 'first', 'Ivan', 'Petrov', '1234', 'ROLE_USER');
-
-INSERT INTO public.users (id, user_Name, first_Name, second_Name, password, role) values (2, 'second', 'Petr', 'Ivanov', '4321', 'ROLE_USER');
-
 
 --
 -- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin

@@ -23,7 +23,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    //.antMatchers("/").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
@@ -36,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // No encode password only for test project
         auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());;
     }
 }

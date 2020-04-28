@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
-public class Event {
+public class Event implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -44,6 +44,11 @@ public class Event {
 
     public Event() {
 
+    }
+
+    @Override
+    public Event clone() throws CloneNotSupportedException {
+        return (Event) super.clone();
     }
 
     public Long getId() {

@@ -6,13 +6,16 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Formatter;
 
-public class EventDuration {
+public class EventInfo {
 
-    private long startInMinute;
+    private final long startInMinute;
 
-    private  long durationInMinute;
+    private final long durationInMinute;
 
-    public EventDuration(Event event) {
+    private Event event;
+
+    public EventInfo(Event event) {
+        this.event = event;
         long startInMinute = Duration.between
                 (
                         event.getStartDate().truncatedTo(ChronoUnit.DAYS),
@@ -27,8 +30,12 @@ public class EventDuration {
         this.durationInMinute = durationInMinute;
     }
 
-    public void setDurationInMinute(long durationInMinute) {
-        this.durationInMinute = durationInMinute;
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public long getDurationInMinute() {
@@ -37,10 +44,6 @@ public class EventDuration {
 
     public long getStartInMinute() {
         return startInMinute;
-    }
-
-    public void setStartInMinute(long startInMinute) {
-        this.startInMinute = startInMinute;
     }
 
     public String getStartTime() {

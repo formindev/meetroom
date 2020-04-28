@@ -4,8 +4,7 @@ import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
-import com.formindev.meetroom.utils.EventDuration;
-import org.apache.logging.log4j.message.Message;
+import com.formindev.meetroom.utils.EventInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,20 +22,18 @@ public class BookingController {
     EventService eventService;
 
     @GetMapping
-    public String getEventsByWeek(Model model) {
-        Map<LocalDateTime, List<Event>> events = eventService.getEventsByWeek();
+    public String getEventsByWeek(Model model) throws CloneNotSupportedException{
+        Map<LocalDateTime, List<EventInfo>> events = eventService.getEventsByWeek();
         Iterable<LocalDateTime> daysOfWeek = DateUtils.getDaysOfWeek();
-        Map<Long, EventDuration> eventDurations = eventService.getEventDurations();
         model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("hoursOfDay", DateUtils.hoursOfDay);
         model.addAttribute("events", events);
-        model.addAttribute("eventDurations", eventDurations);
 
         return "booking";
     }
 
-    @PostMapping("event/addEvent")
-    public String addEvent(
+    @PostMapping("event/saveEvent")
+    public String saveEvent(
             @AuthenticationPrincipal User owner,
             @RequestParam String reserveDate,
             @RequestParam String title,
@@ -55,9 +52,8 @@ public class BookingController {
             Model model
     ) {
         Event event = eventService.getEventById(id);
-        EventDuration eventDuration = new EventDuration(event);
-        model.addAttribute("event", event);
-        model.addAttribute("eventDuration", eventDuration);
+        EventInfo eventInfo = new EventInfo(event);
+        model.addAttribute("eventInfo", eventInfo);
         return "details";
     }
 
@@ -83,7 +79,7 @@ public class BookingController {
         return "redirect:/booking";
     }
 
-    @PostMapping("/event")
+    @PostMapping("/event/addEvent")
     public String getEventForm(
             @RequestParam String startDate,
             Model model
