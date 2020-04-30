@@ -5,7 +5,6 @@ import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +17,12 @@ import java.util.Map;
 @Controller
 @RequestMapping("/booking")
 public class BookingController {
-    @Autowired
-    EventService eventService;
+
+    private final EventService eventService;
+
+    public BookingController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @GetMapping
     public String getEventsByWeek(Model model) throws CloneNotSupportedException{

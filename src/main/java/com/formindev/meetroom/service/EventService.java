@@ -5,7 +5,6 @@ import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,8 +15,11 @@ import java.util.*;
 @Service
 public class EventService {
 
-    @Autowired
-    EventRepository eventRepository;
+    private final EventRepository eventRepository;
+
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
     public void saveEvent(
             User owner,
