@@ -5,6 +5,7 @@ import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -13,13 +14,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
-
-    public EventService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
 
     public void saveEvent(
             User owner,
@@ -29,14 +27,12 @@ public class EventService {
             String title,
             String description
     ) {
-        String[] startTimeArray = startTime.split(":");
-        int startHour = Integer.parseInt(startTimeArray[0]);
-        int startMinute = Integer.parseInt(startTimeArray[1]);
-        LocalDateTime startDate = LocalDateTime.parse(reserveDate).plusHours(startHour).plusMinutes(startMinute);
-        String[] finishTimeArray = duration.split(":");
-        int finishHour = Integer.parseInt(finishTimeArray[0]);
-        int finishMinute = Integer.parseInt(finishTimeArray[1]);
-        LocalDateTime finishDate = startDate.plusHours(finishHour).plusMinutes(finishMinute);
+        int[] startTimeArray = timeParse(startTime);
+        LocalDateTime startDate = LocalDateTime.parse(reserveDate)
+                                               .plusHours(startTimeArray[0])
+                                               .plusMinutes(startTimeArray[1]);
+        int[] finishTimeArray = timeParse(duration);
+        LocalDateTime finishDate = startDate.plusHours(finishTimeArray[0]).plusMinutes(finishTimeArray[1]);
         //TODO replace to validation
         boolean isMinDuration = Duration.between(startDate, finishDate).toMinutes() >= 30;
         // Checking if event is not overlap with other events
@@ -54,10 +50,9 @@ public class EventService {
         for (int i = 0; i < DateUtils.DAYS_OF_WEEK - 1; i++) {
             LocalDateTime date = DateUtils.currentMonday.plusDays(i);
 
-            List<Event> eventsByDate = eventRepository.findByStartDateBetween
-                    (
-                            date, date.plusDays(1)
-                    );
+            List<Event> eventsByDate = eventRepository.findByStartDateBetween(
+                    date, date.plusDays(1)
+            );
 
             List<EventInfo> eventInfoList = new ArrayList<>();
 
@@ -96,6 +91,14 @@ public class EventService {
         if (event.getOwner().getUsername().equals(user.getUsername())) {
             eventRepository.deleteById(id);
         }
+    }
+
+    private int[] timeParse(String timeString) {
+        String[] timeArray = timeString.split(":");
+        int[] timeInteger = new int[2];
+        timeInteger[0] = Integer.parseInt(timeArray[0]);
+        timeInteger[1] = Integer.parseInt(timeArray[1]);
+        return timeInteger;
     }
 
     private boolean checkEvent(LocalDateTime startDate, LocalDateTime finishDate) {

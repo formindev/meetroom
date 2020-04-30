@@ -1,5 +1,8 @@
 package com.formindev.meetroom.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +17,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,10 +40,6 @@ public class User implements UserDetails {
 
     private String role;
 
-    public String getRole() {
-        return role;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = Arrays.stream(getRole().split(","))
@@ -46,44 +48,9 @@ public class User implements UserDetails {
         return authorities;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Override
     public String getUsername() {
         return userName;
-    }
-
-    public void setUsername(String userName) {
-        this.userName = userName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -104,9 +71,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
