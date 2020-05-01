@@ -1,6 +1,7 @@
 package com.formindev.meetroom.controller;
 
 import com.formindev.meetroom.domain.Event;
+import com.formindev.meetroom.domain.EventDto;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
@@ -9,9 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +41,17 @@ public class BookingController {
     @PostMapping("event/saveEvent")
     public String saveEvent(
             @AuthenticationPrincipal User owner,
-            @RequestParam String reserveDate,
-            @RequestParam String title,
-            @RequestParam String startTime,
-            @RequestParam String duration,
-            @RequestParam String description
+            @Valid EventDto eventDto,
+            BindingResult bindingResult,
+            Model model
     ) {
-        eventService.saveEvent(owner, reserveDate, startTime, duration, title, description);
+        if (bindingResult.hasErrors()){
+            model.addAttribute("eventDto", eventDto);
+            return "event";
+        }
+
+        eventDto.setOwner(owner.getId());
+        eventService.saveEvent(eventDto);
 
         return "redirect:/booking";
     }
@@ -85,8 +94,11 @@ public class BookingController {
             @RequestParam String startDate,
             Model model
     ) {
-        LocalDateTime date = LocalDateTime.parse(startDate);
-        model.addAttribute("startDate", date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(startDate, formatter);
+        EventDto eventDto = EventDto.builder().startDate(date).build();
+        //model.addAttribute("startDate", date);
+        model.addAttribute("eventDto", eventDto);
 
         return "event";
     }

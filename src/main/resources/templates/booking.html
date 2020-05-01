@@ -23,7 +23,7 @@
                 <div class="text-align-center" th:text="${day.getDayOfWeek()}"></div>
                 <form method="post" th:action="@{booking/event/addEvent}">
                     <button type="submit" class="btn btn-primary btn-sm">
-                        <input type="hidden" name="startDate" th:value="${day}">
+                        <input type="hidden" name="startDate" th:value="${#temporals.format(day,'dd.MM.yyyy')}">
                         <div th:text="${#temporals.format(day,'dd.MM.yyyy')}"></div>
                     </button>
                 </form>

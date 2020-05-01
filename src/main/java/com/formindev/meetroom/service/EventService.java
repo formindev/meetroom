@@ -1,12 +1,16 @@
 package com.formindev.meetroom.service;
 
 import com.formindev.meetroom.domain.Event;
+import com.formindev.meetroom.domain.EventDto;
 import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.repository.EventRepository;
+import com.formindev.meetroom.repository.UserRepository;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
+import com.formindev.meetroom.utils.EventValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,27 +23,18 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    public void saveEvent(
-            User owner,
-            String reserveDate,
-            String startTime,
-            String duration,
-            String title,
-            String description
-    ) {
-        int[] startTimeArray = timeParse(startTime);
-        LocalDateTime startDate = LocalDateTime.parse(reserveDate)
-                                               .plusHours(startTimeArray[0])
-                                               .plusMinutes(startTimeArray[1]);
-        int[] finishTimeArray = timeParse(duration);
+    private final UserRepository userRepository;
+
+    public void saveEvent(EventDto eventDto) {
+        int[] startTimeArray = timeParse(eventDto.getStartTime());
+        LocalDateTime startDate = eventDto.getStartDate().atTime(startTimeArray[0], startTimeArray[1]);
+        int[] finishTimeArray = timeParse(eventDto.getDuration());
         LocalDateTime finishDate = startDate.plusHours(finishTimeArray[0]).plusMinutes(finishTimeArray[1]);
         //TODO replace to validation
-        boolean isMinDuration = Duration.between(startDate, finishDate).toMinutes() >= 30;
+        User owner = userRepository.findById(eventDto.getOwner()).get();
         // Checking if event is not overlap with other events
-        if (checkEvent(startDate, finishDate) && isMinDuration) {
-            Event event = new Event(owner, title, description, startDate, finishDate);
+        Event event = new Event(owner, eventDto.getTitle(), eventDto.getDescription(), startDate, finishDate);
             eventRepository.save(event);
-        }
     }
 
     public Map<LocalDateTime, List<EventInfo>> getEventsByWeek() throws CloneNotSupportedException{
@@ -81,8 +76,7 @@ public class EventService {
     }
 
     public Event getEventById(long id) {
-        Event event = eventRepository.findById(id);
-        return event;
+        return eventRepository.findById(id);
     }
 
     public void deleteEventById(User user, long id) {
@@ -99,15 +93,5 @@ public class EventService {
         timeInteger[0] = Integer.parseInt(timeArray[0]);
         timeInteger[1] = Integer.parseInt(timeArray[1]);
         return timeInteger;
-    }
-
-    private boolean checkEvent(LocalDateTime startDate, LocalDateTime finishDate) {
-        Integer eventsCount = eventRepository
-                .findByStartDateBetweenOrFinishDateBetween(startDate, finishDate);
-        if (eventsCount == 0) {
-            return true;
-        }
-
-        return false;
     }
 }
