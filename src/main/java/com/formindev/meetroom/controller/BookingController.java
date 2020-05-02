@@ -6,6 +6,7 @@ import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventInfo;
+import com.formindev.meetroom.utils.EventValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,8 @@ public class BookingController {
 
     private final EventService eventService;
 
+    private final EventValidator eventValidator;
+
     @GetMapping
     public String getEventsByWeek(Model model) throws CloneNotSupportedException{
         Map<LocalDateTime, List<EventInfo>> events = eventService.getEventsByWeek();
@@ -45,8 +48,8 @@ public class BookingController {
             BindingResult bindingResult,
             Model model
     ) {
+        //eventValidator.validate();
         if (bindingResult.hasErrors()){
-            model.addAttribute("eventDto", eventDto);
             return "event";
         }
 
@@ -97,7 +100,6 @@ public class BookingController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate date = LocalDate.parse(startDate, formatter);
         EventDto eventDto = EventDto.builder().startDate(date).build();
-        //model.addAttribute("startDate", date);
         model.addAttribute("eventDto", eventDto);
 
         return "event";

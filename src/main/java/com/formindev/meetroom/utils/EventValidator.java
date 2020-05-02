@@ -1,6 +1,7 @@
 package com.formindev.meetroom.utils;
 
 import com.formindev.meetroom.domain.Event;
+import com.formindev.meetroom.domain.EventDto;
 import com.formindev.meetroom.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,10 +25,10 @@ public class EventValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        Event event = (Event) o;
+        EventDto event = (EventDto) o;
 
         if (Duration.between(event.getStartDate(), event.getFinishDate()).toMinutes() >= 30) {
-            errors.rejectValue("durationError", "Duration can`t be less than 30 minute");
+            errors.rejectValue("duration", "Duration can`t be less than 30 minute");
         }
 
         if (!checkEvent(event.getStartDate(), event.getFinishDate())) {

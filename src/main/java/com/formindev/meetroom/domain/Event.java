@@ -20,11 +20,9 @@ public class Event implements Cloneable{
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @NotNull(message = "Title can't be empty")
-    @Size(min=3, message = "Title length must be min 8")
+    @NotNull
     private String title;
 
-    @Size(max = 2048, message = "Description too long")
     private String description;
 
     @NotNull
@@ -36,7 +34,7 @@ public class Event implements Cloneable{
     public Event(
             User owner,
             @NotNull String title,
-            @Size(max = 2048) String description,
+            String description,
             @NotNull LocalDateTime startDate,
             @NotNull LocalDateTime finishDate
     ) {

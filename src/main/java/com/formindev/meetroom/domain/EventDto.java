@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -18,19 +19,17 @@ public class EventDto {
     @NotNull
     private LocalDate startDate;
 
-    @NotNull
+    @NotEmpty(message = "Start time can`t be empty")
     private String startTime;
 
-    @NotNull
+    @NotEmpty(message = "Duration can`t be empty")
     private String duration;
 
-    @NotNull(message = "Title can't be empty")
-    @Size(min=3, message = "Title length must be min 8")
+    @NotEmpty(message = "Title can't be empty")
     private String title;
 
     @Size(max = 2048, message = "Description too long")
     private String description;
 
-    @NotNull
     private Long owner;
 }
