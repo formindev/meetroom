@@ -43,15 +43,15 @@
             </div>
             <div class="col border-right border-dark" th:each="day : ${daysOfWeek}">
                 <div th:each="event : ${events.get(day)}">
-                    <a href="details.html" th:href="@{/booking/event/{id}(id=${event.getEvent().getId()})}">
+                    <a href="details.html" th:href="@{/booking/event/{id}(id=${event.getEventId()})}">
                         <div class="card text-center bg-light border-dark"
                              th:style="position+':absolute;'+
-                                       top+':'+${event.getStartInMinute()}+'px;'+
+                                       top+':'+${event.getStartTimeInMinute()}+'px;'+
                                        height+':'+${event.getDurationInMinute()-2}+'px;'+width+':80%;'">
                             <div class="card-title">
-                                <small><span data-toggle="popover" th:title="${event.getEvent().getTitle()}"
-                                             th:data-content="${event.getEvent().getDescription()}"
-                                             th:text="${event.getEvent().getOwner().getUsername()}"></span></small>
+                                <small><span data-toggle="popover" th:title="${event.getTitle()}"
+                                             th:data-content="${event.getDescription()}"
+                                             th:text="${event.getOwner().getUsername()}"></span></small>
                             </div>
                         </div>
                     </a>
