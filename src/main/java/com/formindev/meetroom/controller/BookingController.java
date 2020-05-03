@@ -1,9 +1,7 @@
 package com.formindev.meetroom.controller;
 
-import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.EventDto;
 import com.formindev.meetroom.domain.User;
-import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
 import com.formindev.meetroom.utils.EventValidator;
@@ -43,8 +41,7 @@ public class BookingController {
     public String saveEvent(
             @AuthenticationPrincipal User owner,
             @Valid EventDto eventDto,
-            BindingResult bindingResult,
-            Model model
+            BindingResult bindingResult
     ) {
         eventValidator.validate(eventDto, bindingResult);
 
@@ -72,13 +69,11 @@ public class BookingController {
     public String deleteEvent(
             @AuthenticationPrincipal User user,
             @Valid EventDto eventDto,
-            BindingResult bindingResult,
-            Model model
-            ) {
+            BindingResult bindingResult
+    ) {
         eventValidator.ownerValidate(eventDto, user, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("eventDto", eventDto);
             return "details";
         }
 

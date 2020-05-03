@@ -20,8 +20,6 @@ public class EventValidator implements Validator {
 
     private final EventRepository eventRepository;
 
-    private final EventService eventService;
-
     @Override
     public boolean supports(Class<?> aClass) {
         return Event.class.equals(aClass);

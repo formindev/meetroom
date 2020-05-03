@@ -2,7 +2,6 @@ package com.formindev.meetroom.service;
 
 import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.EventDto;
-import com.formindev.meetroom.domain.User;
 import com.formindev.meetroom.mapper.EventMapper;
 import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.utils.DateUtils;
