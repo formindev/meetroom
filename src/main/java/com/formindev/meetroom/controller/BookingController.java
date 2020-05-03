@@ -3,9 +3,9 @@ package com.formindev.meetroom.controller;
 import com.formindev.meetroom.domain.Event;
 import com.formindev.meetroom.domain.EventDto;
 import com.formindev.meetroom.domain.User;
+import com.formindev.meetroom.repository.EventRepository;
 import com.formindev.meetroom.service.EventService;
 import com.formindev.meetroom.utils.DateUtils;
-import com.formindev.meetroom.utils.EventInfo;
 import com.formindev.meetroom.utils.EventValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +30,8 @@ public class BookingController {
 
     @GetMapping
     public String getEventsByWeek(Model model) throws CloneNotSupportedException{
-        Map<LocalDateTime, List<EventInfo>> events = eventService.getEventsByWeek();
-        Iterable<LocalDateTime> daysOfWeek = DateUtils.getDaysOfWeek();
+        Map<LocalDate, List<EventDto>> events = eventService.getEventDtosByWeek();
+        Iterable<LocalDate> daysOfWeek = DateUtils.getDaysOfWeek();
         model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("hoursOfDay", DateUtils.hoursOfDay);
         model.addAttribute("events", events);
@@ -48,12 +46,13 @@ public class BookingController {
             BindingResult bindingResult,
             Model model
     ) {
-        //eventValidator.validate();
+        eventValidator.validate(eventDto, bindingResult);
+
         if (bindingResult.hasErrors()){
             return "event";
         }
 
-        eventDto.setOwner(owner.getId());
+        eventDto.setOwner(owner);
         eventService.saveEvent(eventDto);
 
         return "redirect:/booking";
@@ -64,17 +63,26 @@ public class BookingController {
             @PathVariable long id,
             Model model
     ) {
-        Event event = eventService.getEventById(id);
-        EventInfo eventInfo = new EventInfo(event);
-        model.addAttribute("eventInfo", eventInfo);
+        EventDto eventDto = eventService.getEventDtoById(id);
+        model.addAttribute("eventDto", eventDto);
         return "details";
     }
 
     @PostMapping("/event/{id}")
     public String deleteEvent(
             @AuthenticationPrincipal User user,
-            @PathVariable long id) {
-        eventService.deleteEventById(user, id);
+            @Valid EventDto eventDto,
+            BindingResult bindingResult,
+            Model model
+            ) {
+        eventValidator.ownerValidate(eventDto, user, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("eventDto", eventDto);
+            return "details";
+        }
+
+        eventService.deleteEventById(eventDto.getEventId());
         return "redirect:/booking";
     }
 
@@ -97,8 +105,7 @@ public class BookingController {
             @RequestParam String startDate,
             Model model
     ) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate date = LocalDate.parse(startDate, formatter);
+        LocalDate date = LocalDate.parse(startDate);
         EventDto eventDto = EventDto.builder().startDate(date).build();
         model.addAttribute("eventDto", eventDto);
 

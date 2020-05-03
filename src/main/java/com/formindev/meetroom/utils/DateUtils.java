@@ -8,11 +8,10 @@ import java.util.*;
 
 public class DateUtils {
     public static final int DAYS_OF_WEEK = 7;
-    public static LocalDateTime currentMonday;
+    public static LocalDate currentMonday;
 
     static {
-        currentMonday = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        currentMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
     public static final String[] hoursOfDay = new String[] {
@@ -23,8 +22,8 @@ public class DateUtils {
             "20:00", "21:00", "22:00", "23:00", "24:00"
     };
 
-    public static List<LocalDateTime> getDaysOfWeek() {
-        List<LocalDateTime> currentWeek = new ArrayList<>();
+    public static List<LocalDate> getDaysOfWeek() {
+        List<LocalDate> currentWeek = new ArrayList<>();
 
         for (int i = 0; i < DAYS_OF_WEEK - 1; i++) {
             currentWeek.add(currentMonday.plusDays(i));
